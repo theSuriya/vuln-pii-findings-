@@ -1,0 +1,14 @@
+<users>
+    <user>
+        <name>Laura Mitchell</name>
+        <email>laura.mitchell@example.com</email>
+        <phone>333-555-7777</phone>
+        <ssn>123-45-6789</ssn>
+    </user>
+    <user>
+        <name>Michael Carter</name>
+        <email>michael.carter@example.com</email>
+        <phone>444-666-8888</phone>
+        <ssn>234-56-7890</ssn>
+    </user>
+</users>
