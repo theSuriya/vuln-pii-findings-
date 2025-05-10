@@ -1,0 +1,717 @@
+[
+  {
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\napp.secret_key = os.urandom(24)",
+      "description": "Using `os.urandom(24)` at startup sets a new secret key each run, invalidating existing sessions and making secret rotation unpredictable. An attacker could force sessions to expire or replay old cookies. Instead, load a strong, fixed secret from a secure vault or environment variable so it remains constant across restarts."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_PASSWORD = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Hardcoded credentials (for demonstration purposes only)\nADMIN_USERNAME = 'admin'\nADMIN_PASSWORD = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Embedding credentials in code risks exposure in version control or shared environments. An attacker with read access could compromise admin. Fetch credentials from environment variables or a secrets manager and never commit them to source control."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "c.execute(\"INSERT INTO posts (title, content) VALUES ('\" + title + \"', '\" + content + \"')\")",
+      "code_snipped": "if request.form['username'] == ADMIN_USERNAME and request.form['password'] == ADMIN_PASSWORD:\n    conn = sqlite3.connect('blog.db')\n    c = conn.cursor()\n    c.execute(\"INSERT INTO posts (title, content) VALUES ('\" + title + \"', '\" + content + \"')\")\n    conn.commit()",
+      "description": "User-supplied `title` and `content` are concatenated directly into an SQL string, allowing attackers to inject malicious SQL (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`c.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\", (title, content))`) to sanitize inputs."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "@app.route('/delete_post/<int:id>', methods=['POST'])\n... c.execute('DELETE FROM posts WHERE id = ?', (id,))",
+      "code_snipped": "@app.route('/delete_post/<int:id>', methods=['POST'])\ndef delete_post(id):\n    conn = sqlite3.connect('blog.db')\n    c = conn.cursor()\n    c.execute('DELETE FROM posts WHERE id = ?', (id,))\n    conn.commit()",
+      "description": "The `/delete_post` endpoint lacks any check of `session['logged_in']`; any client can delete posts. An attacker could call this to erase content. Enforce `@login_required` or verify `session['logged_in']` before performing deletes."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "result = subprocess.getoutput(command)",
+      "code_snipped": "@app.route('/exec_command', methods=['POST'])\n... command = request.form['command']\nresult = subprocess.getoutput(command)",
+      "description": "Unvalidated `command` from the user is passed directly to the shell, allowing arbitrary OS command execution (e.g., `; rm -rf /`). Use a safe API (no shell) like `subprocess.run([...], shell=False)` or strictly whitelist commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Running Flask with `debug=True` exposes the interactive debugger and source code on errors, which attackers can exploit to execute arbitrary code. Disable debug in production (`debug=False`) and set `ENV` and `FLASK_DEBUG` appropriately."
+    }
+  ]
+},
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\napp.secret_key = os.urandom(24)",
+      "description": "Using `os.urandom(24)` at startup sets a new secret key each run, invalidating existing sessions and making secret rotation unpredictable. An attacker could force sessions to expire or replay old cookies. Instead, load a strong, fixed secret from a secure vault or environment variable so it remains constant across restarts."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_PASS = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Hardcoded credentials (for demonstration purposes only)\nADMIN_USER = 'admin'\nADMIN_PASS = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Embedding credentials in code risks exposure in version control or shared environments. An attacker with read access could compromise admin. Fetch credentials from environment variables or a secrets manager and never commit them to source control."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "cur2.execute(\"INSERT INTO posts (title, content) VALUES ('\" + heading + \"', '\" + body + \"')\")",
+      "code_snipped": "if user_field == ADMIN_USER and pass_field == ADMIN_PASS:\n    db = sqlite3.connect('blog.db')\n    cur2 = db.cursor()\n    cur2.execute(\"INSERT INTO posts (title, content) VALUES ('\" + heading + \"', '\" + body + \"')\")\n    db.commit()",
+      "description": "User-supplied `heading` and `body` are concatenated directly into an SQL string, allowing attackers to inject malicious SQL (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`cur2.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\", (heading, body))`) to sanitize inputs."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "cdel.execute('DELETE FROM posts WHERE id = ?', (delete_id,))",
+      "code_snipped": "@app.route('/delete_post/<int:delete_id>', methods=['POST'])\ndef delete_post(delete_id):\n    conn2 = sqlite3.connect('blog.db')\n    cdel = conn2.cursor()\n    cdel.execute('DELETE FROM posts WHERE id = ?', (delete_id,))",
+      "description": "The `/delete_post` endpoint lacks any check of `session['logged']`; any client can delete posts. An attacker could call this to erase content. Enforce `@login_required` or verify `session['logged']` before performing deletes."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "output = subprocess.getoutput(to_run)",
+      "code_snipped": "@app.route('/exec_command', methods=['POST'])\n    to_run = request.form['command']\n    output = subprocess.getoutput(to_run)",
+      "description": "Unvalidated `to_run` from the user is passed directly to the shell, allowing arbitrary OS command execution (e.g., `; rm -rf /`). Use a safe API (no shell) like `subprocess.run([...], shell=False)` or strictly whitelist commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Running Flask with `debug=True` exposes the interactive debugger and source code on errors, which attackers can exploit to execute arbitrary code. Disable debug in production (`debug=False`) and set `ENV` and `FLASK_DEBUG` appropriately."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\napp.secret_key = os.urandom(24)",
+      "description": "Using `os.urandom(24)` at startup generates a new secret on each run, invalidating sessions and making rotation unpredictable. Load a fixed secret from an environment variable or secure vault to maintain consistent session signing."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "SUPERPASS = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Hardcoded credentials (for demonstration purposes only)\nSUPERUSER = 'admin'\nSUPERPASS = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Embedding admin credentials in source code risks accidental leakage. Retrieve credentials from environment variables or a secrets manager and avoid committing them to version control."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "ins.execute(\"INSERT INTO posts (title, content) VALUES ('\" + post_title + \"', '\" + post_body + \"')\")",
+      "code_snipped": "if uname == SUPERUSER and pwdguess == SUPERPASS:\n    connx = sqlite3.connect('blog.db')\n    ins = connx.cursor()\n    ins.execute(\"INSERT INTO posts (title, content) VALUES ('\" + post_title + \"', '\" + post_body + \"')\")\n    connx.commit()",
+      "description": "Concatenating `post_title` and `post_body` into SQL allows injection (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`ins.execute(..., (post_title, post_body))`) to safely bind user input."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "cd.execute('DELETE FROM posts WHERE id = ?', (did,))",
+      "code_snipped": "@app.route('/delete_post/<int:did>', methods=['POST'])\ndef delete_post(did):\n    conn_del = sqlite3.connect('blog.db')\n    cd = conn_del.cursor()\n    cd.execute('DELETE FROM posts WHERE id = ?', (did,))",
+      "description": "The delete endpoint does not verify `session['authorized']`, so anyone can delete posts. Add a login-required decorator or explicit session check before executing deletions."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "shell_result = subprocess.getoutput(shell_input)",
+      "code_snipped": "@app.route('/exec_command', methods=['POST'])\n    shell_input = request.form['command']\n    shell_result = subprocess.getoutput(shell_input)",
+      "description": "Passing unvalidated `shell_input` directly to the shell allows arbitrary command execution (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a whitelist of allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Running with `debug=True` exposes an interactive debugger and application source on errors, enabling remote code execution. Disable debug in production by setting `debug=False`."
+    }
+  ]
+}
+,
+
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\napp.secret_key = os.urandom(24)",
+      "description": "Using `os.urandom(24)` at startup generates a different secret on each run, invalidating sessions and making key management unpredictable. Load a stable secret from a secure environment variable or vault."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ROOT_PASSWD = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Hardcoded credentials (for demonstration purposes only)\nROOT_USER = 'admin'\nROOT_PASSWD = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Storing credentials in code risks exposure in repos or shared systems. Use environment variables or a secrets manager, and never commit credentials to source control."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "add_cur.execute(\"INSERT INTO posts (title, content) VALUES ('\" + new_title + \"', '\" + new_content + \"')\")",
+      "code_snipped": "if in_user == ROOT_USER and in_pass == ROOT_PASSWD:\n    conn_add = sqlite3.connect('blog.db')\n    add_cur = conn_add.cursor()\n    add_cur.execute(\"INSERT INTO posts (title, content) VALUES ('\" + new_title + \"', '\" + new_content + \"')\")\n    conn_add.commit()",
+      "description": "Concatenating `new_title` and `new_content` into the SQL string allows injection (e.g., `'); DROP TABLE posts; --`). Use parameterized queries to bind inputs safely (`execute(..., (new_title, new_content))`)."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "del_cur.execute('DELETE FROM posts WHERE id = ?', (del_id,))",
+      "code_snipped": "@app.route('/delete_post/<int:del_id>', methods=['POST'])\ndef delete_post(del_id):\n    conn_del = sqlite3.connect('blog.db')\n    del_cur = conn_del.cursor()\n    del_cur.execute('DELETE FROM posts WHERE id = ?', (del_id,))",
+      "description": "The delete endpoint doesn’t verify `session['is_logged']`, so any client can delete posts. Enforce authentication via a decorator or explicit session check before deletes."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "cmd_output = subprocess.getoutput(cmd_input)",
+      "code_snipped": "@app.route('/exec_command', methods=['POST'])\n    cmd_input = request.form['command']\n    cmd_output = subprocess.getoutput(cmd_input)",
+      "description": "Passing unvalidated `cmd_input` directly to the shell allows arbitrary command execution (e.g., `; rm -rf /`). Use `subprocess.run` with `shell=False` and a strict whitelist of allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Running with `debug=True` exposes the Flask debugger and source code on errors, enabling code execution by attackers. Disable debug (`debug=False`) in production and set proper environment variables."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.config['SECRET_KEY'] = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\napp.config['SECRET_KEY'] = os.urandom(24)",
+      "description": "Using `os.urandom(24)` at startup regenerates the Flask secret on each run, invalidating sessions unpredictably. Store a constant secret in an environment variable or vault for stable session signing."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "PASS_ROOT = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Hardcoded credentials\nUSER_ROOT = 'admin'\nPASS_ROOT = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Static credentials in code risk exposure in repos or logs. Fetch admin credentials from secure environment variables or a secrets manager and remove them from source code."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "sql = f\"INSERT INTO posts (title, content) VALUES ('{hdr}', '{txt}')\"",
+      "code_snipped": "if usr == USER_ROOT and pwd == PASS_ROOT:\n    db = get_db()\n    cur_ins = db.cursor()\n    sql = f\"INSERT INTO posts (title, content) VALUES ('{hdr}', '{txt}')\"\n    cur_ins.execute(sql)\n    db.commit()",
+      "description": "Using f-strings to build SQL with user inputs `hdr` and `txt` allows injection (e.g., `'); DROP TABLE posts; --`). Always use parameterized queries (`execute(..., (hdr, txt))`) to sanitize input."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "c.execute('DELETE FROM posts WHERE id=?', (pid,))",
+      "code_snipped": "@app.route('/remove/<int:pid>', methods=['POST'])\ndef remove(pid):\n    conn = get_db()\n    c = conn.cursor()\n    c.execute('DELETE FROM posts WHERE id=?', (pid,))",
+      "description": "The `/remove` route lacks any session or auth check, letting anyone delete posts. Enforce authentication via a decorator or explicit `session['ok']` check before performing deletes."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "res = subprocess.getoutput(inp)",
+      "code_snipped": "@app.route('/shell', methods=['POST'])\n    inp = request.form['command']\n    res = subprocess.getoutput(inp)",
+      "description": "Directly passing user-controlled `inp` to the shell allows arbitrary OS command execution (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a whitelist of permitted commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Running Flask in debug mode exposes the interactive debugger and source code on errors, enabling attackers to run arbitrary code. Disable debug (`debug=False`) in production environments."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\n# Weak random secret\napp.secret_key = os.urandom(24)",
+      "description": "Each startup generates a new `secret_key`, invalidating existing sessions and making key management unpredictable. Load a fixed, strong secret from an environment variable or secure vault."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_SECRET = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Insecure hardcoded admin credentials\nADMIN_LOGIN = 'admin'\nADMIN_SECRET = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Storing credentials in source code risks exposure in version control. Use environment variables or a secrets manager, and never commit sensitive data to the repo."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "cursor.execute(\"INSERT INTO posts (title, content) VALUES ('\" + t + \"', '\" + c + \"')\")",
+      "code_snipped": "if u == ADMIN_LOGIN and p == ADMIN_SECRET:\n    conn = open_database()\n    cursor = conn.cursor()\n    # SQL injection\n    cursor.execute(\"INSERT INTO posts (title, content) VALUES ('\" + t + \"', '\" + c + \"')\")\n    conn.commit()",
+      "description": "Direct concatenation of user inputs `t` and `c` into SQL allows injection (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`execute(..., (t, c))`) to safely bind inputs."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "c.execute('DELETE FROM posts WHERE id=?', (pid,))",
+      "code_snipped": "@app.route('/remove/<int:pid>', methods=['POST'])\ndef remove(pid):\n    # NO auth check\n    db = open_database()\n    c = db.cursor()\n    c.execute('DELETE FROM posts WHERE id=?', (pid,))",
+      "description": "The `/remove` endpoint lacks any `session['logged']` check, so unauthenticated users can delete posts. Add an authentication decorator or explicit session validation."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "out = subprocess.getoutput(cmd_val)",
+      "code_snipped": "@app.route('/run', methods=['POST'])\n    cmd_val = request.form['command']\n    # Command injection\n    out = subprocess.getoutput(cmd_val)",
+      "description": "Passing unvalidated `cmd_val` directly to the shell permits arbitrary OS commands (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` and strictly whitelist allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    # Debug enabled\n    app.run(debug=True)",
+      "description": "Enabling `debug=True` exposes the Flask debugger and source code to users, enabling remote code execution. Disable debug in production (`debug=False`) and configure environment variables properly."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\n# Weak session secret\napp.secret_key = os.urandom(24)",
+      "description": "A new `secret_key` is generated on each start, invalidating sessions and hindering secret management. Store a constant secret via an environment variable or secrets manager."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_KEY = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Static admin creds\nADMIN_ID = 'admin'\nADMIN_KEY = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Embedding credentials in code risks source leaks. Fetch credentials from secure environment variables or a vault and avoid committing them to version control."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "statement = \"INSERT INTO posts (title, content) VALUES ('\" + title_val + \"', '\" + content_val + \"')\"",
+      "code_snipped": "if login == ADMIN_ID and passwd == ADMIN_KEY:\n    db = connect_db()\n    c = db.cursor()\n    # Vulnerable SQL assembly\n    statement = \"INSERT INTO posts (title, content) VALUES ('\" + title_val + \"', '\" + content_val + \"')\"\n    c.execute(statement)\n    db.commit()",
+      "description": "Building SQL via string concatenation with `title_val` and `content_val` allows injection (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`execute(..., (title_val, content_val))`) to safely bind input."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "deleter.execute('DELETE FROM posts WHERE id=?', (pid,))",
+      "code_snipped": "@app.route('/post/delete/<int:pid>', methods=['POST'])\ndef post_delete(pid):\n    # NO login check\n    conn = connect_db()\n    deleter = conn.cursor()\n    deleter.execute('DELETE FROM posts WHERE id=?', (pid,))",
+      "description": "The delete route doesn’t verify `session['active']`, so anyone can delete posts. Require authentication (e.g., decorator or explicit session check) before allowing deletions."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "console_out = subprocess.getoutput(console_cmd)",
+      "code_snipped": "@app.route('/console', methods=['POST'])\n    console_cmd = request.form['command']\n    # Command injection hotspot\n    console_out = subprocess.getoutput(console_cmd)",
+      "description": "Passing unfiltered `console_cmd` into the shell enables arbitrary command execution (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a strict whitelist of allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    # Debug left enabled\n    app.run(debug=True)",
+      "description": "Leaving `debug=True` exposes the interactive debugger and source code to end users, enabling remote code execution. Disable debug in production (`debug=False`) and set proper environment variables."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.config.update(SECRET_KEY=os.urandom(24))",
+      "code_snipped": "app = Flask(__name__)\n# Weak dynamic secret\napp.config.update(SECRET_KEY=os.urandom(24))",
+      "description": "Using `os.urandom(24)` dynamically generates a new secret key on each restart, invalidating sessions unpredictably. Store a stable secret in an environment variable or secure vault."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "MASTER_PASS = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "# Embedded admin credentials\nMASTER_USER = 'admin'\nMASTER_PASS = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Embedding credentials in source code risks exposure via version control. Use environment variables or a dedicated secrets manager instead of hardcoding."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "raw = \"INSERT INTO posts (title, content) VALUES ('\" + ttl + \"', '\" + cnt + \"')\"",
+      "code_snipped": "if usr == MASTER_USER and pwd == MASTER_PASS:\n    db = db_connect()\n    cur_ins = db.cursor()\n    # SQL injection\n    raw = \"INSERT INTO posts (title, content) VALUES ('\" + ttl + \"', '\" + cnt + \"')\"\n    cur_ins.execute(raw)\n    db.commit()",
+      "description": "Concatenating `ttl` and `cnt` directly into the SQL string allows injection attacks (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`execute(..., (ttl, cnt))`) to safely bind user input."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "cdl.execute('DELETE FROM posts WHERE id = ?', (pid,))",
+      "code_snipped": "@app.route('/delete/<int:pid>', methods=['POST'])\ndef delete(pid):\n    # No auth\n    conn = db_connect()\n    cdl = conn.cursor()\n    cdl.execute('DELETE FROM posts WHERE id = ?', (pid,))",
+      "description": "The `/delete` route doesn’t verify `session['loggedin']`, so any client can delete posts. Enforce authentication by checking session or using a decorator."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "result = subprocess.getoutput(user_cmd)",
+      "code_snipped": "@app.route('/execute', methods=['POST'])\n    user_cmd = request.form['command']\n    # Command injection\n    result = subprocess.getoutput(user_cmd)",
+      "description": "Directly feeding `user_cmd` into the shell allows arbitrary command execution (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a whitelist of permitted commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    # Debug mode on\n    app.run(debug=True)",
+      "description": "Enabling `debug=True` exposes the interactive debugger and source code upon errors, enabling remote code execution. Disable debug in production (`debug=False`) and properly configure environment variables."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "def create_app():\n    app = Flask(__name__)\n    # Weak rotating secret\n    app.secret_key = os.urandom(24)\n    return app",
+      "description": "Generating a new `secret_key` on each startup invalidates existing sessions and complicates key management. Use a stable secret loaded from an environment variable or secrets manager."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_ACCOUNT = { 'user': 'admin', 'pass': '0zu9r2idf9c0tfcc4w26l66ij7visb8q' }",
+      "code_snipped": "# Dangerous hardcoded admin credentials\nADMIN_ACCOUNT = {\n    'user': 'admin',\n    'pass': '0zu9r2idf9c0tfcc4w26l66ij7visb8q'\n}",
+      "description": "Embedding credentials in source code risks exposure via version control or logs. Retrieve secrets from environment variables or a secure secrets manager, and remove them from code."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "query = \"INSERT INTO posts (title, content) VALUES ('\" + heading + \"', '\" + body + \"')\"",
+      "code_snipped": "if username == ADMIN_ACCOUNT['user'] and password == ADMIN_ACCOUNT['pass']:\n    conn = get_connection()\n    cursor = conn.cursor()\n    # SQL Injection vulnerability\n    query = \"INSERT INTO posts (title, content) VALUES ('\" + heading + \"', '\" + body + \"')\"\n    cursor.execute(query)\n    conn.commit()",
+      "description": "Building SQL strings via concatenation of `heading` and `body` allows injection (e.g., `'); DROP TABLE posts; --`). Always use parameterized queries (`execute(..., (heading, body))`) to safely bind inputs."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "cur.execute('DELETE FROM posts WHERE id=' + str(pid))",
+      "code_snipped": "@app.route('/erase/<int:pid>', methods=['POST'])\ndef erase(pid):\n    # Missing authentication\n    conn = get_connection()\n    cur = conn.cursor()\n    cur.execute('DELETE FROM posts WHERE id=' + str(pid))",
+      "description": "The `/erase` endpoint does not verify `session['valid']`, so any client can delete posts. Enforce authentication via a decorator or explicit session check before performing deletions."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "out = subprocess.getoutput(user_input)",
+      "code_snipped": "@app.route('/cmd', methods=['POST'])\n    user_input = request.form.get('command')\n    # Command Injection vulnerability\n    out = subprocess.getoutput(user_input)",
+      "description": "Passing unvalidated `user_input` directly to the shell enables arbitrary command execution (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a strict whitelist of allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    # Debug mode in production\n    app.run(debug=True)",
+      "description": "Running with `debug=True` exposes the interactive debugger and source code on errors, enabling remote code execution. Disable debug mode (`debug=False`) in production and configure environment variables appropriately."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.config[\"SECRET_KEY\"] = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\n# Rotating secret—every start changes it\napp.config[\"SECRET_KEY\"] = os.urandom(24)",
+      "description": "Using `os.urandom(24)` at each startup rotates the secret, invalidating sessions and complicating key management. Use a static secret fetched from an environment variable or secret store."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "SUPER_PASSCODE = \"0zu9r2idf9c0tfcc4w26l66ij7visb8q\"",
+      "code_snipped": "# Credentials stuck in code\nSUPER_ADMIN = \"admin\"\nSUPER_PASSCODE = \"0zu9r2idf9c0tfcc4w26l66ij7visb8q\"",
+      "description": "Storing admin credentials in code risks exposure if the repo is leaked. Retrieve secrets from secure environment variables or a dedicated secrets manager instead."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "insert_stmt = \"INSERT INTO posts (title, body) VALUES ('\" + t + \"', '\" + b + \"')\"",
+      "code_snipped": "if u == SUPER_ADMIN and p == SUPER_PASSCODE:\n    conn = db_conn()\n    c = conn.cursor()\n    # SQL injection risk\n    insert_stmt = \"INSERT INTO posts (title, body) VALUES ('\" + t + \"', '\" + b + \"')\"\n    c.execute(insert_stmt)\n    conn.commit()",
+      "description": "Concatenating `t` and `b` into the SQL statement allows injection (e.g., `'); DROP TABLE posts; --`). Use parameterized queries (`execute(..., (t, b))`) to safely bind user input."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "del_cur.execute(\"DELETE FROM posts WHERE id=\" + str(post_id))",
+      "code_snipped": "@app.route(\"/delete/<int:post_id>\", methods=[\"POST\"])\ndef delete_entry(post_id):\n    # No authorization check\n    con = db_conn()\n    del_cur = con.cursor()\n    del_cur.execute(\"DELETE FROM posts WHERE id=\" + str(post_id))",
+      "description": "The `/delete` route lacks any check of `session[\"authenticated\"]`, allowing any user to delete posts. Enforce authentication via a decorator or explicit session validation before deletion."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "output = subprocess.getoutput(cmd)",
+      "code_snipped": "@app.route(\"/shell\", methods=[\"POST\"])\n    cmd = request.form[\"command\"]\n    # Command injection vulnerability\n    output = subprocess.getoutput(cmd)",
+      "description": "Passing unvalidated `cmd` directly to the shell allows arbitrary OS command execution (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a strict whitelist of allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == \"__main__\":\n    # Debug left on\n    app.run(debug=True)",
+      "description": "Running Flask with `debug=True` exposes the interactive debugger and application source on errors, which attackers can exploit to execute arbitrary code. Disable debug in production (`debug=False`) and set `FLASK_ENV=production`."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Predictable Secret Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\n# Rotating secret key (insecure)\napp.secret_key = os.urandom(24)",
+      "description": "Regenerating the secret key on each start invalidates sessions unpredictably and complicates key management. Use a constant secret from an environment variable or secure vault."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "PASSWORD_ADMIN = \"0zu9r2idf9c0tfcc4w26l66ij7visb8q\"",
+      "code_snipped": "# Credentials in code\nUSERNAME_ADMIN = \"admin\"\nPASSWORD_ADMIN = \"0zu9r2idf9c0tfcc4w26l66ij7visb8q\"",
+      "description": "Static credentials in source code risk exposure via version control or logging. Retrieve credentials from environment variables or a secrets manager instead of hardcoding."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "sql_stmt = \"INSERT INTO posts (heading, body) VALUES ('{}', '{}')\".format(heading, body)",
+      "code_snipped": "if user == USERNAME_ADMIN and pwd == PASSWORD_ADMIN:\n    conn = get_db_connection()\n    cur = conn.cursor()\n    # SQL injection vulnerability\n    sql_stmt = \"INSERT INTO posts (heading, body) VALUES ('{}', '{}')\".format(heading, body)\n    cur.execute(sql_stmt)\n    conn.commit()",
+      "description": "Using string formatting to construct SQL with `heading` and `body` allows injection (e.g., `'); DROP TABLE posts; --`). Always use parameterized queries (`execute(..., (heading, body))`) to bind inputs safely."
+    },
+    {
+      "vulnerability": "SQL Injection on SELECT",
+      "cwe_id": "CWE-89",
+      "vuln_code": "cur.execute(\"SELECT * FROM posts WHERE id=\" + str(post_id))",
+      "code_snipped": "@app.route(\"/posts/<int:post_id>\")\ndef show_post(post_id):\n    conn = get_db_connection()\n    cur = conn.cursor()\n    # Unsafe string concatenation even in SELECT\n    cur.execute(\"SELECT * FROM posts WHERE id=\" + str(post_id))",
+      "description": "Concatenating `post_id` into SELECT allows SQL injection if the integer is manipulated (e.g., `1 OR 1=1`). Use parameterized queries (`execute(..., (post_id,))`) for all database operations."
+    },
+    {
+      "vulnerability": "Missing Authorization Check on Deletion",
+      "cwe_id": "CWE-285",
+      "vuln_code": "cur.execute(\"DELETE FROM posts WHERE id=\" + str(post_id))",
+      "code_snipped": "@app.route(\"/posts/<int:post_id>/delete\", methods=[\"POST\"])\ndef delete_post(post_id):\n    # No authorization check\n    conn = get_db_connection()\n    cur = conn.cursor()\n    cur.execute(\"DELETE FROM posts WHERE id=\" + str(post_id))",
+      "description": "The delete route does not verify `session[\"logged_in\"]`, so any user can delete posts. Enforce authentication via decorator or explicit session check before sensitive operations."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "result = subprocess.getoutput(cmd)",
+      "code_snipped": "@app.route(\"/execute\", methods=[\"POST\"])\n    cmd = request.form[\"command\"]\n    # Command injection vulnerability\n    result = subprocess.getoutput(cmd)",
+      "description": "Passing unvalidated `cmd` directly to the shell enables arbitrary OS commands (e.g., `; rm -rf /`). Use `subprocess.run([...], shell=False)` with a whitelist of allowed commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled in Production",
+      "cwe_id": "CWE-571",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == \"__main__\":\n    # Debug mode left on\n    app.run(debug=True)",
+      "description": "Leaving `debug=True` exposes the interactive debugger and source code to end users, enabling remote code execution. Disable debug (`debug=False`) in production and configure `FLASK_ENV=production`."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Insecure Secret Key Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.secret_key = os.urandom(24)",
+      "code_snipped": "app = Flask(__name__)\napp.secret_key = os.urandom(24)",
+      "description": "The secret key is set using `os.urandom(24)` on each run, making it change with every restart. This invalidates all user sessions, logging users out unexpectedly. An attacker could exploit this by forcing a restart to disrupt sessions. The impact is loss of session continuity. The root cause is using a dynamic key instead of a persistent one. Fix by setting a fixed, secure key in an environment variable, e.g., `app.secret_key = os.environ['SECRET_KEY']`."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_USERNAME = 'admin'\nADMIN_PASSWORD = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "code_snipped": "ADMIN_USERNAME = 'admin'\nADMIN_PASSWORD = '0zu9r2idf9c0tfcc4w26l66ij7visb8q'",
+      "description": "Credentials are hardcoded in the code, exposing them if the source is accessed. An attacker could use `admin` and the password to gain full control. The impact is unauthorized administrative access. The root cause is plaintext storage in code. Fix by using environment variables: `ADMIN_USERNAME = os.environ['ADMIN_USER']` and `ADMIN_PASSWORD = os.environ['ADMIN_PASS']`."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "c.execute(\"INSERT INTO posts (title, content) VALUES ('\" + title + \"', '\" + content + \"')\")",
+      "code_snipped": "if request.form['username'] == ADMIN_USERNAME and request.form['password'] == ADMIN_PASSWORD:\n    conn = sqlite3.connect('blog.db')\n    c = conn.cursor()\n    c.execute(\"INSERT INTO posts (title, content) VALUES ('\" + title + \"', '\" + content + \"')\")",
+      "description": "User input (`title`, `content`) is concatenated into an SQL query, allowing injection like `', ''); DROP TABLE posts; --` to destroy data. This leads to data loss or database compromise. The root cause is lack of parameterization. Fix with parameterized queries: `c.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (title, content))`."
+    },
+    {
+      "vulnerability": "Missing Authorization for Critical Operations",
+      "cwe_id": "CWE-862",
+      "vuln_code": "c.execute('DELETE FROM posts WHERE id = ?', (id,))",
+      "code_snipped": "@app.route('/delete_post/<int:id>', methods=['POST'])\ndef delete_post(id):\n    conn = sqlite3.connect('blog.db')\n    c = conn.cursor()\n    c.execute('DELETE FROM posts WHERE id = ?', (id,))\n    conn.commit()\n    conn.close()\n    return redirect(url_for('index'))",
+      "description": "The `delete_post` route allows anyone to delete posts via POST without checking authorization. An attacker could send a request to `/delete_post/1` to remove data. The impact is unauthorized data deletion. The root cause is missing auth checks. Fix by verifying `session['logged_in']` and user permissions before deletion."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "command = request.form['command']\nresult = subprocess.getoutput(command)",
+      "code_snipped": "@app.route('/exec_command', methods=['GET', 'POST'])\ndef exec_command():\n    if request.method == 'POST':\n        command = request.form['command']\n        result = subprocess.getoutput(command)\n        return render_template('exec_command.html', result=result)",
+      "description": "User input is executed as a system command, enabling attacks like `rm -rf /` to wipe the server. This can lead to total system compromise. The root cause is unvalidated command execution. Fix by removing this feature or using a strict whitelist of commands, e.g., `if command in ['ls', 'dir']: subprocess.run([command])`."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled",
+      "cwe_id": "CWE-489",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Debug mode exposes stack traces on errors, leaking sensitive info like file paths. An attacker could trigger errors to gather intel for further attacks. The impact is information disclosure. The root cause is enabling debug in production. Fix by setting `app.run(debug=False)` or omitting `debug` in production."
+    }
+  ]
+}
+,
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Insecure Session Key Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.config['SESSION_KEY'] = os.urandom(32)",
+      "code_snipped": "app = Flask(__name__)\napp.config['SESSION_KEY'] = os.urandom(32)",
+      "description": "The session key is generated with `os.urandom(32)` on each app start, invalidating sessions. This disrupts user experience and can be exploited to force logouts. The root cause is a non-persistent key. Fix by using a fixed key via environment variables: `app.config['SESSION_KEY'] = os.environ['SESSION_KEY']`."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "USER_ADMIN = 'admin_root'\nPASS_ADMIN = 'secret@456'",
+      "code_snipped": "USER_ADMIN = 'admin_root'\nPASS_ADMIN = 'secret@456'",
+      "description": "Hardcoded credentials (`admin_root`, `secret@456`) are exposed in the code, allowing unauthorized access if discovered. The root cause is storing secrets in plaintext. Fix by using environment variables: `USER_ADMIN = os.environ['USER_ADMIN']` and `PASS_ADMIN = os.environ['PASS_ADMIN']`."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "cur.execute(f\"INSERT INTO posts (title, content) VALUES ('{title_input}', '{content_input}')\")",
+      "code_snipped": "if request.form['user'] == USER_ADMIN and request.form['pass'] == PASS_ADMIN:\n    db = sqlite3.connect('blog.db')\n    cur = db.cursor()\n    cur.execute(f\"INSERT INTO posts (title, content) VALUES ('{title_input}', '{content_input}')\")",
+      "description": "Direct interpolation of `title_input` and `content_input` into the SQL query enables injection (e.g., `', ''); DROP TABLE posts; --`). This can lead to data loss or compromise. The root cause is unparameterized queries. Fix with: `cur.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (title_input, content_input))`."
+    },
+    {
+      "vulnerability": "Missing Authorization for Critical Operations",
+      "cwe_id": "CWE-862",
+      "vuln_code": "cur.execute('DELETE FROM posts WHERE id = {}'.format(id))",
+      "code_snipped": "@app.route('/delete_post/<int:id>', methods=['POST'])\ndef delete_post(id):\n    db = sqlite3.connect('blog.db')\n    cur = db.cursor()\n    cur.execute('DELETE FROM posts WHERE id = {}'.format(id))\n    db.commit()\n    db.close()\n    return redirect(url_for('index'))",
+      "description": "The `delete_post` route lacks authorization, allowing anyone to delete posts via POST to `/delete_post/1`. This risks unauthorized data removal. The root cause is no auth check. Fix by checking `session['logged_in']` and permissions."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "exec_cmd = request.form['cmd']\ncmd_result = subprocess.getoutput(exec_cmd)",
+      "code_snipped": "@app.route('/exec_command', methods=['GET', 'POST'])\ndef exec_command():\n    if request.method == 'POST':\n        exec_cmd = request.form['cmd']\n        cmd_result = subprocess.getoutput(exec_cmd)\n        return render_template('exec_command.html', result=cmd_result)",
+      "description": "Unvalidated `exec_cmd` is executed as a system command, enabling attacks like `rm -rf /`. This risks full system compromise. The root cause is direct execution of user input. Fix by removing this or using a whitelist: `if exec_cmd in ['ls', 'dir']: subprocess.run([exec_cmd])`."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled",
+      "cwe_id": "CWE-489",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Debug mode exposes stack traces on errors, leaking sensitive info like file paths. Attackers can exploit this for reconnaissance. The root cause is enabling debug in production. Fix by using `app.run(debug=False)`."
+    }
+  ]
+},
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Insecure Session Key Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.config['SESSION_KEY'] = os.urandom(32)",
+      "code_snipped": "app = Flask(__name__)\napp.config['SESSION_KEY'] = os.urandom(32)",
+      "description": "The session key is generated with `os.urandom(32)` on each app start, invalidating sessions and forcing users to log in again. This disrupts user experience and can be exploited to force logouts. The impact is session continuity loss. The root cause is a non-persistent key. Fix by using a fixed key via environment variables: `app.config['SESSION_KEY'] = os.environ['SESSION_KEY']`."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "USER_ADMIN = 'admin_root'\nPASS_ADMIN = 'secret@456'",
+      "code_snipped": "USER_ADMIN = 'admin_root'\nPASS_ADMIN = 'secret@456'",
+      "description": "Credentials (`admin_root`, `secret@456`) are hardcoded, exposing them if the code is accessed. An attacker could use these to gain administrative access. The impact is unauthorized access. The root cause is storing secrets in code. Fix by using environment variables: `USER_ADMIN = os.environ['USER_ADMIN']`, `PASS_ADMIN = os.environ['PASS_ADMIN']`."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "cur.execute(f\"INSERT INTO posts (title, content) VALUES ('{title_input}', '{content_input}')\")",
+      "code_snipped": "if request.form['user'] == USER_ADMIN and request.form['pass'] == PASS_ADMIN:\n    db = sqlite3.connect('blog.db')\n    cur = db.cursor()\n    cur.execute(f\"INSERT INTO posts (title, content) VALUES ('{title_input}', '{content_input}')\")",
+      "description": "User input (`title_input`, `content_input`) is interpolated into the SQL query, allowing injection like `', ''); DROP TABLE posts; --` to destroy data. This leads to data loss or compromise. The root cause is lack of parameterization. Fix with: `cur.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (title_input, content_input))`."
+    },
+    {
+      "vulnerability": "Missing Authorization for Critical Operations",
+      "cwe_id": "CWE-862",
+      "vuln_code": "cur.execute('DELETE FROM posts WHERE id = {}'.format(id))",
+      "code_snipped": "@app.route('/delete_post/<int:id>', methods=['POST'])\ndef delete_post(id):\n    db = sqlite3.connect('blog.db')\n    cur = db.cursor()\n    cur.execute('DELETE FROM posts WHERE id = {}'.format(id))\n    db.commit()\n    db.close()\n    return redirect(url_for('index'))",
+      "description": "The `delete_post` route allows anyone to delete posts via POST without checking authorization. An attacker could send a request to `/delete_post/1` to remove data. The impact is unauthorized data deletion. The root cause is missing auth checks. Fix by verifying `session['logged_in']` and user permissions before deletion."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "exec_cmd = request.form['cmd']\ncmd_result = subprocess.getoutput(exec_cmd)",
+      "code_snipped": "@app.route('/exec_command', methods=['GET', 'POST'])\ndef exec_command():\n    if request.method == 'POST':\n        exec_cmd = request.form['cmd']\n        cmd_result = subprocess.getoutput(exec_cmd)\n        return render_template('exec_command.html', result=cmd_result)",
+      "description": "Unvalidated `exec_cmd` is executed as a system command, enabling attacks like `rm -rf /` to wipe the server. This can lead to total system compromise. The root cause is direct execution of user input. Fix by removing this feature or using a strict whitelist of commands."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled",
+      "cwe_id": "CWE-489",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Debug mode exposes stack traces on errors, leaking sensitive info like file paths. An attacker could trigger errors to gather intel for further attacks. The impact is information disclosure. The root cause is enabling debug in production. Fix by setting `app.run(debug=False)`."
+    }
+  ]
+},
+{
+  "vulnerabilities": [
+    {
+      "vulnerability": "Insecure Session Key Generation",
+      "cwe_id": "CWE-330",
+      "vuln_code": "app.config['SESSION_KEY'] = os.urandom(16)",
+      "code_snipped": "app = Flask(__name__)\napp.config['SESSION_KEY'] = os.urandom(16)",
+      "description": "Generating a session key with `os.urandom(16)` on each app start invalidates sessions, forcing user logouts. An attacker could exploit this to disrupt sessions by triggering restarts. The impact is session continuity loss. The root cause is a non-persistent key. Fix by using a fixed, secure key: `app.config['SESSION_KEY'] = os.environ['SESSION_KEY']`."
+    },
+    {
+      "vulnerability": "Hardcoded Credentials",
+      "cwe_id": "CWE-798",
+      "vuln_code": "ADMIN_USER = 'superadmin'\nADMIN_PASS = 'p@ssw0rd123'",
+      "code_snipped": "ADMIN_USER = 'superadmin'\nADMIN_PASS = 'p@ssw0rd123'",
+      "description": "Hardcoded credentials (`superadmin`, `p@ssw0rd123`) expose admin access if code is compromised. An attacker could gain full control. The impact is unauthorized access. The root cause is plaintext credentials in code. Fix by using environment variables: `ADMIN_USER = os.environ['ADMIN_USER']`, `ADMIN_PASS = os.environ['ADMIN_PASS']`."
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "cwe_id": "CWE-89",
+      "vuln_code": "cursor.execute(f\"INSERT INTO posts (title, content) VALUES ('{post_title}', '{post_content}')\")",
+      "code_snipped": "if request.form['admin_user'] == ADMIN_USER and request.form['admin_pass'] == ADMIN_PASS:\n    db = sqlite3.connect('blog.db')\n    cursor = db.cursor()\n    cursor.execute(f\"INSERT INTO posts (title, content) VALUES ('{post_title}', '{post_content}')\")",
+      "description": "Interpolating `post_title` and `post_content` into SQL allows injection (e.g., `', ''); DROP TABLE posts; --`), risking data loss. The root cause is unparameterized queries. Fix with: `cursor.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (post_title, post_content))`."
+    },
+    {
+      "vulnerability": "Missing Authorization for Critical Operations",
+      "cwe_id": "CWE-862",
+      "vuln_code": "cursor.execute(f'DELETE FROM posts WHERE id = {id}')",
+      "code_snipped": "@app.route('/delete_post/<int:id>', methods=['POST'])\ndef delete_post(id):\n    db = sqlite3.connect('blog.db')\n    cursor = db.cursor()\n    cursor.execute(f'DELETE FROM posts WHERE id = {id}')\n    db.commit()\n    db.close()\n    return redirect(url_for('index'))",
+      "description": "The `delete_post` route lacks authorization, allowing anyone to delete posts via POST to `/delete_post/1`. This risks unauthorized data deletion. The root cause is no auth check. Fix by verifying `session['logged_in']` and permissions before deletion."
+    },
+    {
+      "vulnerability": "Command Injection",
+      "cwe_id": "CWE-78",
+      "vuln_code": "user_cmd = request.form['command']\ncmd_output = subprocess.run(user_cmd, shell=True, capture_output=True, text=True).stdout",
+      "code_snipped": "@app.route('/exec_command', methods=['GET', 'POST'])\ndef exec_command():\n    if request.method == 'POST':\n        user_cmd = request.form['command']\n        cmd_output = subprocess.run(user_cmd, shell=True, capture_output=True, text=True).stdout\n        return render_template('exec_command.html', result=cmd_output)",
+      "description": "Unvalidated `user_cmd` is executed via `subprocess.run` with `shell=True`, enabling commands like `rm -rf /`. This risks system compromise. The root cause is direct execution of user input. Fix by removing or using a command whitelist: `if user_cmd in ['ls', 'dir']: subprocess.run([user_cmd])`."
+    },
+    {
+      "vulnerability": "Debug Mode Enabled",
+      "cwe_id": "CWE-489",
+      "vuln_code": "app.run(debug=True)",
+      "code_snipped": "if __name__ == '__main__':\n    app.run(debug=True)",
+      "description": "Debug mode leaks stack traces on errors, exposing paths and configs. Attackers can use this for reconnaissance. The impact is information disclosure. The root cause is enabling debug in production. Fix by setting `app.run(debug=False)`."
+    }
+  ]
+}
+
+]
+
+
+
+
+
