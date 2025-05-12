@@ -1,5 +1,5 @@
 [
-  {"file_name":"1.py",
+  {"file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/1.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -45,7 +45,7 @@
     }
   ]
 },
-{ "file_name":"2.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/2.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -92,7 +92,7 @@
   ]
 }
 ,
-{ "file_name":"3.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/3.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -140,7 +140,7 @@
 }
 ,
 
-{ "file_name":"4.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/4.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -187,7 +187,7 @@
   ]
 }
 ,
-{ "file_name":"5.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/5.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -234,7 +234,7 @@
   ]
 }
 ,
-{ "file_name":"6.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/6.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -281,7 +281,7 @@
   ]
 }
 ,
-{ "file_name":"7.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/7.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -328,7 +328,7 @@
   ]
 }
 ,
-{ "file_name":"8.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/8.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -375,7 +375,7 @@
   ]
 }
 ,
-{ "file_name":"9.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/9.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -422,7 +422,7 @@
   ]
 }
 ,
-{ "file_name":"10.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/10.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -469,7 +469,7 @@
   ]
 }
 ,
-{ "file_name":"11.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/11.py",
   "vulnerabilities": [
     {
       "vulnerability": "Predictable Secret Generation",
@@ -523,7 +523,7 @@
   ]
 }
 ,
-{ "file_name":"12.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/12.py",
   "vulnerabilities": [
     {
       "vulnerability": "Insecure Secret Key Generation",
@@ -570,7 +570,7 @@
   ]
 }
 ,
-{ "file_name":"13.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/13.py",
   "vulnerabilities": [
     {
       "vulnerability": "Insecure Session Key Generation",
@@ -616,7 +616,7 @@
     }
   ]
 },
-{ "file_name":"14.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/14.py",
   "vulnerabilities": [
     {
       "vulnerability": "Insecure Session Key Generation",
@@ -662,7 +662,7 @@
     }
   ]
 },
-{ "file_name":"15.py",
+{ "file_name":"https://github.com/theSuriya/vuln-pii-findings-/blob/main/15.py",
   "vulnerabilities": [
     {
       "vulnerability": "Insecure Session Key Generation",
@@ -707,8 +707,159 @@
       "description": "Debug mode leaks stack traces on errors, exposing paths and configs. Attackers can use this for reconnaissance. The impact is information disclosure. The root cause is enabling debug in production. Fix by setting `app.run(debug=False)`."
     }
   ]
+},
+{ 
+"file_name":"https://github.com/AquilaX-AI/vulnapp-python/blob/main/info_tp.txt",
+"vulnerabilities": [
+    {
+      "vulnerability": "Sensitive Data Exposure - Potential Token/Identifier",
+      "cwe_id": "CWE-200",
+      "vuln_code": "QQ123456B",
+      "code_snipped": "QQ123456B",
+      "description": "A potential token or identifier `QQ123456B` was found exposed in plain text. If this value represents a session cookie, API key, or other credential, its exposure allows attackers to potentially impersonate users or gain unauthorized access. The root cause is the direct inclusion or logging of sensitive identifiers. Remediate by removing the identifier, storing it securely (e.g., environment variables, secrets management), and ensuring logs/outputs are sanitized."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Potential Token/Identifier",
+      "cwe_id": "CWE-200",
+      "vuln_code": "QQ123456B",
+      "code_snipped": "`QQ123456B",
+      "description": "A potential token or identifier `QQ123456B` was found exposed in plain text (within backticks). If this value represents a session cookie, API key, or other credential, its exposure allows attackers to potentially impersonate users or gain unauthorized access. The root cause is the direct inclusion or logging of sensitive identifiers. Remediate by removing the identifier, storing it securely (e.g., environment variables, secrets management), and ensuring logs/outputs are sanitized."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Potential Token/Identifier",
+      "cwe_id": "CWE-200",
+      "vuln_code": "QQ123456B",
+      "code_snipped": "\"QQ123456B\"",
+      "description": "A potential token or identifier `QQ123456B` was found exposed in plain text (within double quotes). If this value represents a session cookie, API key, or other credential, its exposure allows attackers to potentially impersonate users or gain unauthorized access. The root cause is the direct inclusion or logging of sensitive identifiers. Remediate by removing the identifier, storing it securely (e.g., environment variables, secrets management), and ensuring logs/outputs are sanitized."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Potential Token/Identifier",
+      "cwe_id": "CWE-200",
+      "vuln_code": "QQ123456B",
+      "code_snipped": "'QQ123456B'",
+      "description": "A potential token or identifier `QQ123456B` was found exposed in plain text (within single quotes). If this value represents a session cookie, API key, or other credential, its exposure allows attackers to potentially impersonate users or gain unauthorized access. The root cause is the direct inclusion or logging of sensitive identifiers. Remediate by removing the identifier, storing it securely (e.g., environment variables, secrets management), and ensuring logs/outputs are sanitized."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Potential Token/Identifier",
+      "cwe_id": "CWE-200",
+      "vuln_code": "QQ123456B",
+      "code_snipped": "\\=QQ123456B",
+      "description": "A potential token or identifier `QQ123456B` was found exposed in plain text (preceded by \\=). If this value represents a session cookie, API key, or other credential, its exposure allows attackers to potentially impersonate users or gain unauthorized access. The root cause is the direct inclusion or logging of sensitive identifiers. Remediate by removing the identifier, storing it securely (e.g., environment variables, secrets management), and ensuring logs/outputs are sanitized."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Potential Token/Identifier",
+      "cwe_id": "CWE-200",
+      "vuln_code": "QQ123456A",
+      "code_snipped": "\\= QQ123456A",
+      "description": "A potential token or identifier `QQ123456A` was found exposed in plain text (preceded by \\= ). If this value represents a session cookie, API key, or other credential, its exposure allows attackers to potentially impersonate users or gain unauthorized access. The root cause is the direct inclusion or logging of sensitive identifiers. Remediate by removing the identifier, storing it securely (e.g., environment variables, secrets management), and ensuring logs/outputs are sanitized."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Email Address",
+      "cwe_id": "CWE-200",
+      "vuln_code": "testing123@aquilax.io",
+      "code_snipped": "[testing123@aquilax.io](mailto:testing123@aquilax.io)",
+      "description": "The email address `testing123@aquilax.io` is exposed in plain text. This exposure constitutes PII leakage, increasing the risk of spam, phishing attacks targeting the individual, and reconnaissance for account takeovers. The root cause is the direct inclusion of the email address without masking or removal. Avoid logging or displaying emails unnecessarily; use data masking or redaction techniques."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - CVV",
+      "cwe_id": "CWE-359",
+      "vuln_code": "2231",
+      "code_snipped": "2231",
+      "description": "The CVV number `2231` is exposed in plain text. Storing or logging CVV data is a critical security failure and a violation of PCI DSS regulations, which explicitly prohibit storing CVV post-authorization. Attackers can use exposed CVVs with card numbers for fraudulent transactions. The root cause is improper handling of sensitive payment data. Immediately remove this data and ensure CVVs are never stored or logged."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - CVV",
+      "cwe_id": "CWE-359",
+      "vuln_code": "691",
+      "code_snipped": "691",
+      "description": "The CVV number `691` is exposed in plain text. Storing or logging CVV data is a critical security failure and a violation of PCI DSS regulations, which explicitly prohibit storing CVV post-authorization. Attackers can use exposed CVVs with card numbers for fraudulent transactions. The root cause is improper handling of sensitive payment data. Immediately remove this data and ensure CVVs are never stored or logged."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Credit Card Number",
+      "cwe_id": "CWE-359",
+      "vuln_code": "4001 5900 0000 0786",
+      "code_snipped": "# Card 4001 5900 0000 0786",
+      "description": "The full credit card number `4001 5900 0000 0786` is exposed. This represents a severe PII leak and PCI DSS violation. Exposed PANs can be directly used for financial fraud. The root cause is the storage or display of the unmasked card number. Remediate by removing or securely masking the PAN (e.g., displaying only the last four digits) and reviewing data handling policies."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Credit Card Number",
+      "cwe_id": "CWE-359",
+      "vuln_code": "3714 4963 5398 431",
+      "code_snipped": "3714 4963 5398 431",
+      "description": "The full credit card number `3714 4963 5398 431` is exposed. This represents a severe PII leak and PCI DSS violation. Exposed PANs can be directly used for financial fraud. The root cause is the storage or display of the unmasked card number. Remediate by removing or securely masking the PAN (e.g., displaying only the last four digits) and reviewing data handling policies."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Credit Card Number",
+      "cwe_id": "CWE-359",
+      "vuln_code": "4001 5900 0000 0001",
+      "code_snipped": "4001 5900 0000 0001",
+      "description": "The full credit card number `4001 5900 0000 0001` is exposed. This represents a severe PII leak and PCI DSS violation. Exposed PANs can be directly used for financial fraud. The root cause is the storage or display of the unmasked card number. Remediate by removing or securely masking the PAN (e.g., displaying only the last four digits) and reviewing data handling policies."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Email Address",
+      "cwe_id": "CWE-200",
+      "vuln_code": "me@myorg.com",
+      "code_snipped": "# Email [me@myorg.com](mailto:me@myorg.com)",
+      "description": "The email address `me@myorg.com` is exposed in plain text. This exposure constitutes PII leakage, increasing the risk of spam, phishing attacks targeting the individual, and reconnaissance for account takeovers. The root cause is the direct inclusion of the email address without masking or removal. Avoid logging or displaying emails unnecessarily; use data masking or redaction techniques."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Email Address",
+      "cwe_id": "CWE-200",
+      "vuln_code": "omer@aquilax.com",
+      "code_snipped": "[omer@aquilax.com](mailto:omer@aquilax.com)",
+      "description": "The email address `omer@aquilax.com` is exposed in plain text. This exposure constitutes PII leakage, increasing the risk of spam, phishing attacks targeting the individual, and reconnaissance for account takeovers. The root cause is the direct inclusion of the email address without masking or removal. Avoid logging or displaying emails unnecessarily; use data masking or redaction techniques."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Email Address",
+      "cwe_id": "CWE-200",
+      "vuln_code": "omer@gmail.com",
+      "code_snipped": "[omer@gmail.com](mailto:omer@gmail.com)",
+      "description": "The email address `omer@gmail.com` is exposed in plain text. This exposure constitutes PII leakage, increasing the risk of spam, phishing attacks targeting the individual, and reconnaissance for account takeovers. The root cause is the direct inclusion of the email address without masking or removal. Avoid logging or displaying emails unnecessarily; use data masking or redaction techniques."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Phone Number",
+      "cwe_id": "CWE-200",
+      "vuln_code": "831-010-5088",
+      "code_snipped": "831-010-5088",
+      "description": "The phone number `831-010-5088` is exposed. Leaking phone numbers is a privacy violation (PII exposure) that facilitates spam calls, SMS phishing (smishing), and social engineering attempts. The root cause is the direct inclusion of the number. Ensure phone numbers are not logged or displayed unnecessarily; apply masking if required for display."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Phone Number",
+      "cwe_id": "CWE-200",
+      "vuln_code": "+91 8310105229",
+      "code_snipped": "+91 8310105229",
+      "description": "The phone number `+91 8310105229` is exposed. Leaking phone numbers is a privacy violation (PII exposure) that facilitates spam calls, SMS phishing (smishing), and social engineering attempts. The root cause is the direct inclusion of the number. Ensure phone numbers are not logged or displayed unnecessarily; apply masking if required for display."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - IP Address",
+      "cwe_id": "CWE-200",
+      "vuln_code": "122.171.16.135",
+      "code_snipped": "122.171.16.135",
+      "description": "The IP address `122.171.16.135` is exposed. Exposing user or internal IP addresses can aid attackers in network mapping, identifying potential targets, or correlating user activity. The root cause is logging or displaying the IP address directly. Review the necessity of exposing this IP; consider anonymization or restricting visibility if it pertains to users or internal systems."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - IP Address",
+      "cwe_id": "CWE-200",
+      "vuln_code": "8.8.8.8",
+      "code_snipped": "8.8.8.8",
+      "description": "The IP address `8.8.8.8` (Google Public DNS) is exposed. While less sensitive than user IPs, unnecessary exposure of any IP can provide context to attackers. The root cause is logging or displaying the IP address. Review the necessity of exposing this IP and remove if not required."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Physical Address",
+      "cwe_id": "CWE-359",
+      "vuln_code": "555-557 Meridian Ave",
+      "code_snipped": "555-557 Meridian Ave",
+      "description": "The physical address `555-557 Meridian Ave` is exposed. This is a serious PII exposure, potentially risking individuals' physical safety, enabling harassment, or facilitating identity theft. The root cause is the direct inclusion of the address. Apply strict data minimization; remove physical addresses from logs, comments, or unnecessary displays immediately."
+    },
+    {
+      "vulnerability": "Sensitive Data Exposure - Physical Address",
+      "cwe_id": "CWE-359",
+      "vuln_code": "789 Pine Avenue",
+      "code_snipped": "789 Pine Avenue",
+      "description": "The physical address `789 Pine Avenue` is exposed. This is a serious PII exposure, potentially risking individuals' physical safety, enabling harassment, or facilitating identity theft. The root cause is the direct inclusion of the address. Apply strict data minimization; remove physical addresses from logs, comments, or unnecessary displays immediately."
+    }
+  ]
 }
-
 ]
 
 
